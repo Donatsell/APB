@@ -14,18 +14,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final List<Map<String, String>> _onboardingData = [
     {
       "title": "Selamat Datang di CodeQuest",
-      "description": "Temukan cara baru belajar coding dengan cara menyenangkan!",
-      "image": "assets/onboarding1.png",
+      "description":
+          "Temukan cara baru belajar coding dengan cara menyenangkan!",
+      "image": "assets/images/onboarding1.png",
     },
     {
       "title": "Belajar Interaktif",
-      "description": "Latihan langsung, quiz, dan tantangan untuk mengasah kemampuanmu.",
-      "image": "assets/onboarding2.png",
+      "description":
+          "Latihan langsung, quiz, dan tantangan untuk mengasah kemampuanmu.",
+      "image": "assets/images/onboarding2.png",
     },
     {
       "title": "Capai Mimpimu",
-      "description": "Mulai perjalanan coding-mu dan raih tujuan karier impianmu.",
-      "image": "assets/onboarding3.png",
+      "description":
+          "Mulai perjalanan coding-mu dan raih tujuan karier impianmu.",
+      "image": "assets/images/onboarding3.png",
     },
   ];
 
@@ -44,14 +47,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                _onboardingData[index]["image"]!,
-                height: 300,
-              ),
+              Image.asset(_onboardingData[index]["image"]!, height: 300),
               const SizedBox(height: 40),
               Text(
                 _onboardingData[index]["title"]!,
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20),
@@ -74,7 +77,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     width: _currentIndex == dotIndex ? 12 : 8,
                     height: _currentIndex == dotIndex ? 12 : 8,
                     decoration: BoxDecoration(
-                      color: _currentIndex == dotIndex ? Colors.blue : Colors.grey,
+                      color:
+                          _currentIndex == dotIndex ? Colors.blue : Colors.grey,
                       shape: BoxShape.circle,
                     ),
                   ),
