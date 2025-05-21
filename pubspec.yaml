@@ -36,6 +36,9 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_svg: ^2.0.7
 
+  #flutter firebase
+  #flutter 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -67,7 +70,7 @@ flutter:
     - assets/images/onboarding1.png
     - assets/images/onboarding2.png
     - assets/images/onboarding3.png
-    - assets/images/CodeQuest.jpg
+    - assets/images/CodeQuest.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

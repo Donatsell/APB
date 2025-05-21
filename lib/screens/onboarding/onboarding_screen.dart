@@ -22,12 +22,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     ),
     OnboardingData(
       title: 'Belajar Interaktif',
-      description: "Latihan langsung, quiz, dan tantangan untuk mengasah kemampuanmu.",
+      description:
+          "Latihan langsung, quiz, dan tantangan untuk mengasah kemampuanmu.",
       image: 'assets/images/onboarding2.png',
     ),
     OnboardingData(
       title: 'Capai Mimpimu',
-      description: "Mulai perjalanan coding-mu dan raih tujuan karier impianmu.",
+      description:
+          "Mulai perjalanan coding-mu dan raih tujuan karier impianmu.",
       image: 'assets/images/onboarding3.png',
     ),
   ];
@@ -39,13 +41,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         MaterialPageRoute(builder: (_) => const LoginScreen()),
       );
     } else {
-      _controller.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+      _controller.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
     }
   }
 
   void _backPage() {
     if (_currentIndex > 0) {
-      _controller.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+      _controller.previousPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
     }
   }
 

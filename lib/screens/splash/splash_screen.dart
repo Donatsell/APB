@@ -51,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen>
               SvgPicture.asset('assets/logo.svg', width: 120, height: 120),
               const SizedBox(height: 16),
               Image.asset(
-                'assets/images/CodeQuest.jpg',
+                'assets/images/CodeQuest.png',
                 width: 150,
                 height: 150,
               ),
