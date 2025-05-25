@@ -26,13 +26,17 @@ class OnboardingPage extends StatelessWidget {
           const SizedBox(height: 32),
           Text(
             data.title,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
           const SizedBox(),
           Text(
             data.description,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.grey[700]),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(color: Colors.grey[700]),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 40),
@@ -40,13 +44,9 @@ class OnboardingPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               if (!isLast)
-                TextButton(
-                  onPressed: onBack,
-                  child: const Text("Back"),
-                )
+                TextButton(onPressed: onBack, child: const Text("Back"))
               // Wrapping the ElevatedButton in a Row to move it to the right
               else
-
                 const SizedBox(), // agar posisi button kanan tetap di ujung
 
               Row(
@@ -57,7 +57,10 @@ class OnboardingPage extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepPurple,
                       foregroundColor: Colors.white, // Text color
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
                     ),
                     child: Text(isLast ? "Mulai" : "Lanjut"),
                   ),

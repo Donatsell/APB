@@ -37,7 +37,17 @@ dependencies:
   flutter_svg: ^2.0.7
 
   #flutter firebase
-  #flutter 
+  firebase_core: ^2.32.0
+  firebase_auth: ^4.17.4
+  cloud_firestore: ^4.17.5
+  firebase_messaging: ^14.7.4
+  firebase_storage: ^11.7.7
+  
+  # flutter google map
+  url_launcher: ^6.2.4
+
+  # google logic 
+  google_sign_in: ^6.2.1
 
 dev_dependencies:
   flutter_test:
@@ -71,6 +81,8 @@ flutter:
     - assets/images/onboarding2.png
     - assets/images/onboarding3.png
     - assets/images/CodeQuest.png
+    - assets/images/WorkingFrames.png
+    - assets/icons/Google.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
