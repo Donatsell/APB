@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:apb_ta_new/screens/auth/auth_services.dart';
 import 'package:apb_ta_new/models/auth_data.dart';
-// import 'package:apb_ta_new/screens/auth/sign_up_screen.dart';
+import '../home/home_mentors.dart';
+import '../home/home_student.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -39,16 +40,21 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     setState(() => _loading = true);
+
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Login berhasil')));
-      Navigator.pushReplacementNamed(context, '/home');
+      final user = FirebaseAuth.instance.currentUser;
+      final role = await getUserRole(user!);
+
+      if (role == 'mentor') {
+        Navigator.pushReplacementNamed(context, '/home-mentors');
+      } else {
+        Navigator.pushReplacementNamed(context, '/home-student');
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found' || e.code == 'wrong-password') {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -83,6 +89,9 @@ class _LoginScreenState extends State<LoginScreen> {
         await saveUserData(cred.user!, cred.user!.displayName ?? 'Pengguna');
       }
 
+      final user = cred.user;
+      final role = await getUserRole(user!);
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -91,7 +100,11 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
 
-      Navigator.pushReplacementNamed(context, '/home');
+      if (role == 'mentor') {
+        Navigator.pushReplacementNamed(context, '/home-mentors');
+      } else {
+        Navigator.pushReplacementNamed(context, '/home-student');
+      }
     } else {
       ScaffoldMessenger.of(
         context,
@@ -103,6 +116,17 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading:
+            Navigator.canPop(context)
+                ? IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () => Navigator.pop(context),
+                )
+                : null,
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Stack(

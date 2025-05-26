@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/onboarding_data.dart';
 import '../../widgets/onboarding_page.dart';
-import '../auth/login_screen.dart';
+// import '../auth/login_screen.dart';
 import '../home/home_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
