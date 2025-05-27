@@ -1,4 +1,3 @@
-// lib/screens/home/home_student.dart
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'home_base_screen.dart';
@@ -6,53 +5,54 @@ import 'home_base_screen.dart';
 class HomeStudentScreen extends StatelessWidget {
   const HomeStudentScreen({super.key});
 
-  static const _recommendCourse = [
+  // ----- kursus contoh -----
+  static const _recommended = [
     {
-      'title': 'Flutter for Beginners',
+      'title': 'Flutter untuk Pemula',
       'rating': 4.8,
-      'duration': '8h',
+      'duration': '8 j',
       'icon': Icons.mobile_friendly,
     },
     {
-      'title': 'UI/UX Fundamentals',
+      'title': 'Dasar-dasar UI/UX',
       'rating': 4.7,
-      'duration': '6h 30m',
+      'duration': '6 j 30 m',
       'icon': Icons.design_services,
     },
     {
-      'title': 'JavaScript Mastery',
+      'title': 'JavaScript Mahir',
       'rating': 4.9,
-      'duration': '12h',
+      'duration': '12 j',
       'icon': Icons.code,
     },
   ];
 
-  // ---------- navigation helpers ----------
-  void _openMyCourse(BuildContext ctx) =>
-      Navigator.pushNamed(ctx, '/choose-course'); // ✅ singular
-  void _openBlogs(BuildContext ctx) => Navigator.pushNamed(ctx, '/blogs');
-  void _openProfile(BuildContext ctx) => Navigator.pushNamed(ctx, '/profile');
-  void _openCourseDetail(BuildContext ctx, Map<String, dynamic> c) =>
+  // ----- helper navigasi -----
+  void _toMyCourse(BuildContext ctx) =>
+      Navigator.pushNamed(ctx, '/choose-course');
+  void _toBlogs(BuildContext ctx) => Navigator.pushNamed(ctx, '/blogs');
+  void _toProfile(BuildContext ctx) => Navigator.pushNamed(ctx, '/profile');
+  void _toCourseDetail(BuildContext ctx, Map<String, dynamic> c) =>
       Navigator.pushNamed(ctx, '/course-detail', arguments: c);
 
   @override
   Widget build(BuildContext context) {
-    final name = FirebaseAuth.instance.currentUser?.displayName ?? 'Student';
+    final nama = FirebaseAuth.instance.currentUser?.displayName ?? 'Siswa';
 
     return HomeBaseScreen(
-      greeting: 'Hi, $name 👋',
-      courses: _recommendCourse,
-      onProfileTap: () => _openProfile(context),
-      onCourseTap: (c) => _openCourseDetail(context, c),
-      onCourseTabTap: () => _openMyCourse(context), // ✅
-      onBlogTabTap: () => _openBlogs(context),
-      selectedChip: 'Recommended',
-      chipLabels: const ['Recommended', 'Design', 'Programming', 'UI/UX'],
+      greeting: 'Hai, $nama 👋',
+      courses: _recommended,
+      onProfileTap: () => _toProfile(context),
+      onCourseTap: (c) => _toCourseDetail(context, c),
+      onCourseTabTap: () => _toMyCourse(context),
+      onBlogTabTap: () => _toBlogs(context),
+      selectedChip: 'Disarankan',
+      chipLabels: const ['Disarankan', 'Desain', 'Pemrograman', 'UI/UX'],
       promoCard: _promoCard(),
     );
   }
 
-  /// kartu promo
+  /// Kartu promo sederhana
   Widget _promoCard() => Container(
     height: 140,
     decoration: BoxDecoration(
@@ -68,7 +68,7 @@ class HomeStudentScreen extends StatelessWidget {
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(
-          'Project-Based Learning 🔥\nEnroll now!',
+          'Belajar Berbasis Proyek 🔥\nDaftar sekarang!',
           style: TextStyle(
             color: Colors.white,
             fontSize: 18,

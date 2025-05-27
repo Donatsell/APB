@@ -15,7 +15,7 @@ import 'screens/auth/forgot_password_screen.dart';
 // Home variants
 import 'screens/home/home_screen.dart';
 import 'screens/home/home_student.dart';
-import 'screens/home/home_mentors.dart'; // ← ganti nama file kalau sebelumnya `home_mentors.dart`
+import 'screens/home/home_mentors.dart';
 
 // Success
 import 'screens/success/success_screen.dart';
@@ -23,6 +23,12 @@ import 'screens/success/success_screen.dart';
 // My-course
 import 'screens/myCourse/course_student.dart'; // ⬅︎ wrapper screen
 // (course_base_screen.dart di-import di dalam file wrapper)
+
+// bloggers
+import 'screens/blogger/blogger_student.dart';
+
+// profil
+import 'screens/profil/profil_student.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -62,8 +68,9 @@ class CodeQuestApp extends StatelessWidget {
         '/home-student': (_) => HomeStudentScreen(), // after login (student)
         '/home-mentors': (_) => HomeMentorScreen(), // after login (mentor)
         '/choose-course': (_) => CourseStudentScreen(),
-
         //'/my-courses-mentor': (_) => const CourseMentorScreen(),
+        '/blogs': (_) => const BloggerStudentScreen(),
+        '/profile': (_) => const ProfileStudentScreen(),
       },
     );
   }

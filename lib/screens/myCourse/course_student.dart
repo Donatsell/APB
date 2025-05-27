@@ -1,61 +1,65 @@
 import 'package:flutter/material.dart';
 import 'course_base_screen.dart';
 
-/// Halaman “Choose Course” khusus Student.
+/// Halaman *Pilih Kursus* (khusus Siswa)
 class CourseStudentScreen extends StatelessWidget {
   const CourseStudentScreen({super.key});
 
+  /// Data contoh (bisa diganti API / Firestore)
   static const _dummy = [
     {
-      'title': 'Photoshop Course',
-      'icon': Icons.photo,
-      'duration': '2h 20m',
+      'judul': 'Kursus Photoshop',
+      'ikon': Icons.photo,
+      'durasi': '2 j 20 m',
       'rating': 4.8,
-      'category': 'Design',
+      'kategori': 'Desain',
     },
     {
-      'title': '3D Design',
-      'icon': Icons.view_in_ar,
-      'duration': '3h 15m',
+      'judul': 'Desain 3D',
+      'ikon': Icons.view_in_ar,
+      'durasi': '3 j 15 m',
       'rating': 4.7,
-      'category': 'Design',
+      'kategori': 'Desain',
     },
     {
-      'title': 'JavaScript Course',
-      'icon': Icons.code,
-      'duration': '2h 50m',
+      'judul': 'Kursus JavaScript',
+      'ikon': Icons.code,
+      'durasi': '2 j 50 m',
       'rating': 4.9,
-      'category': 'Programming',
+      'kategori': 'Pemrograman',
     },
     {
-      'title': 'Internet of Things',
-      'icon': Icons.router,
-      'duration': '1h 40m',
+      'judul': 'Internet of Things',
+      'ikon': Icons.router,
+      'durasi': '1 j 40 m',
       'rating': 4.5,
-      'category': 'Programming',
+      'kategori': 'Pemrograman',
     },
     {
-      'title': 'Machine Learning',
-      'icon': Icons.memory,
-      'duration': '3h 20m',
+      'judul': 'Machine Learning',
+      'ikon': Icons.memory,
+      'durasi': '3 j 20 m',
       'rating': 4.6,
-      'category': 'Programming',
+      'kategori': 'Pemrograman',
     },
     {
-      'title': 'User Experience',
-      'icon': Icons.person_outline,
-      'duration': '2h 45m',
+      'judul': 'User Experience',
+      'ikon': Icons.person_outline,
+      'durasi': '2 j 45 m',
       'rating': 4.7,
-      'category': 'Design',
+      'kategori': 'Desain',
     },
   ];
 
   @override
   Widget build(BuildContext context) {
     return CourseBaseScreen(
-      allCourses: _dummy,
+      semuaKursus: _dummy,
       onCourseTap: (c) {
-        // TODO : buka detail course
+        // TODO: navigasi ke detail kursus
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Buka detail "${c['judul']}"')));
       },
       onBottomTabSelect: (i) {
         switch (i) {

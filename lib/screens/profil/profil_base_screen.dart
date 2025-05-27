@@ -1,62 +1,144 @@
-// import 'package:flutter/material.dart';
-// import 'course_base_screen.dart';
+import 'package:flutter/material.dart';
 
-// /// Wrapper untuk menampilkan halaman course dengan dummy data student.
-// class ProfilBaseScreen extends StatelessWidget {
-//   const ProfilBaseScreen({super.key});
+typedef OnMenuTap = void Function(String id);
+typedef OnTabSelect = void Function(int index);
 
-//   static const _dummyCourses = [
-//     {
-//       'title': 'Photoshop Course',
-//       'icon': Icons.photo,
-//       'duration': '2h 20m',
-//       'rating': 4.8,
-//       'category': 'Design',
-//     },
-//     {
-//       'title': '3D Design',
-//       'icon': Icons.view_in_ar,
-//       'duration': '3h 15m',
-//       'rating': 4.7,
-//       'category': 'Design',
-//     },
-//     {
-//       'title': 'JavaScript Course',
-//       'icon': Icons.code,
-//       'duration': '2h 50m',
-//       'rating': 4.9,
-//       'category': 'Programming',
-//     },
-//     {
-//       'title': 'Internet of Things',
-//       'icon': Icons.router,
-//       'duration': '1h 40m',
-//       'rating': 4.5,
-//       'category': 'Programming',
-//     },
-//     {
-//       'title': 'Machine Learning',
-//       'icon': Icons.memory,
-//       'duration': '3h 20m',
-//       'rating': 4.6,
-//       'category': 'Programming',
-//     },
-//     {
-//       'title': 'User Experience',
-//       'icon': Icons.person_outline,
-//       'duration': '2h 45m',
-//       'rating': 4.7,
-//       'category': 'Design',
-//     },
-//   ];
+class ProfileBaseScreen extends StatelessWidget {
+  final String avatarUrl;
+  final String name;
+  final String email;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return CourseBaseScreen(
-//       allCourses: _dummyCourses,
-//       onCourseTap: (course) {
-//         // TODO: navigate to course detail screen
-//       },
-//     );
-//   }
-// }
+  final int coursesCompleted; // 6
+  final int totalCourses; // 15 – supaya “6/15”
+  final String totalTime; // “9j 35m”
+  final String streak; // “3 hari”
+
+  final OnMenuTap onMenuTap;
+  final int currentTab;
+  final OnTabSelect onTabSelect;
+
+  const ProfileBaseScreen({
+    super.key,
+    required this.avatarUrl,
+    required this.name,
+    required this.email,
+    required this.coursesCompleted,
+    required this.totalCourses,
+    required this.totalTime,
+    required this.streak,
+    required this.onMenuTap,
+    required this.currentTab,
+    required this.onTabSelect,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      // ------------ APP-BAR ------------
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: const SizedBox(), // supaya ikon back di kanan
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new_rounded),
+            color: Colors.black,
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
+      ),
+      // ------------ BODY ------------
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Column(
+          children: [
+            // ----- AVATAR & NAME -----
+            CircleAvatar(radius: 60, backgroundImage: NetworkImage(avatarUrl)),
+            const SizedBox(height: 16),
+            Text(
+              name,
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 4),
+            Text(email, style: const TextStyle(color: Colors.grey)),
+            const SizedBox(height: 32),
+
+            // ----- STATS -----
+            _statRow(
+              Icons.menu_book_rounded,
+              'Kursus Selesai',
+              '$coursesCompleted/$totalCourses',
+            ),
+            const SizedBox(height: 20),
+            _statRow(
+              Icons.access_time_filled_rounded,
+              'Total Waktu Belajar',
+              totalTime,
+            ),
+            const SizedBox(height: 20),
+            _statRow(Icons.local_fire_department_rounded, 'Streak', streak),
+            const SizedBox(height: 32),
+
+            // ----- MENU LIST -----
+            _menuButton(Icons.play_circle_fill, 'Kursus Saya'),
+            _menuButton(Icons.bookmark, 'Blog yang Disimpan'),
+            _menuButton(Icons.history, 'Riwayat Belajar'),
+            _menuButton(Icons.language, 'Bahasa'),
+          ],
+        ),
+      ),
+      // ------------ BOTTOM NAV ------------
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currentTab,
+        selectedItemColor: Colors.deepPurple,
+        unselectedItemColor: Colors.grey,
+        type: BottomNavigationBarType.fixed,
+        onTap: onTabSelect,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
+          BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Kursus Saya'),
+          BottomNavigationBarItem(icon: Icon(Icons.article), label: 'Blog'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profil Saya',
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ───────────────── helpers ─────────────────
+  Widget _statRow(IconData icon, String label, String value) => Row(
+    children: [
+      Icon(icon, color: Colors.black, size: 28),
+      const SizedBox(width: 12),
+      Expanded(child: Text(label)),
+      Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
+    ],
+  );
+
+  Widget _menuButton(IconData icon, String label) => Padding(
+    padding: const EdgeInsets.only(bottom: 12),
+    child: OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+        side: const BorderSide(color: Colors.deepPurple),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      onPressed: () => onMenuTap(label),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.deepPurple),
+          const SizedBox(width: 16),
+          Expanded(child: Text(label)),
+          const Icon(
+            Icons.arrow_forward_ios_rounded,
+            size: 16,
+            color: Colors.deepPurple,
+          ),
+        ],
+      ),
+    ),
+  );
+}

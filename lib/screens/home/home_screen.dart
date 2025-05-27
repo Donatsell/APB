@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import '../auth/login_screen.dart';
 
-/// Home screen for guest (belum login). Semua ikon yang dapat ditekan
-///—baik di header, BottomNavigationBar, maupun di daftar course—akan
-///mengarah ke `LoginScreen`. Teks tanpa ikon tetap tidak aktif.
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
+
+  void _goToLogin(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +20,6 @@ class HomeScreen extends StatelessWidget {
         selectedItemColor: Colors.purple,
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
-        // Semua tab ikon redirect ke LoginScreen
         onTap: (_) => _goToLogin(context),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
@@ -34,7 +37,7 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader(context),
+              _Header(onTap: () => _goToLogin(context)),
               const SizedBox(height: 20),
               const Text(
                 'Hello, Coqu Guest',
@@ -43,43 +46,40 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 4),
               const Text('What do you want to learn?'),
               const SizedBox(height: 20),
-              _buildSearchBar(),
+              const _SearchBar(),
               const SizedBox(height: 20),
-              _buildNewCourseCard(context),
+              _NewCourseCard(onTap: () => _goToLogin(context)),
               const SizedBox(height: 20),
-              _buildCourseSectionTitle(),
+              _CourseSectionTitle(),
               const SizedBox(height: 10),
-              _buildCategoryChips(),
+              const _CategoryChips(),
               const SizedBox(height: 20),
-              Expanded(child: _buildCourseList(context)),
+              Expanded(child: _CourseList(onTap: () => _goToLogin(context))),
             ],
           ),
         ),
       ),
     );
   }
+}
 
-  // ────────────────────────── NAVIGATION HELPER ────────────────────────── //
+// ────────────────────────── WIDGETS ────────────────────────── //
 
-  void _goToLogin(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const LoginScreen()),
-    );
-  }
+class _Header extends StatelessWidget {
+  final VoidCallback onTap;
+  const _Header({required this.onTap});
 
-  // ────────────────────────── SECTION WIDGETS ────────────────────────── //
-
-  Widget _buildHeader(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         GestureDetector(
-          onTap: () => _goToLogin(context),
+          onTap: onTap,
           child: const Icon(Icons.grid_view, color: Colors.purple),
         ),
         GestureDetector(
-          onTap: () => _goToLogin(context),
+          onTap: onTap,
           child: const CircleAvatar(
             backgroundColor: Colors.purple,
             child: Icon(Icons.person, color: Colors.white),
@@ -88,8 +88,13 @@ class HomeScreen extends StatelessWidget {
       ],
     );
   }
+}
 
-  Widget _buildSearchBar() {
+class _SearchBar extends StatelessWidget {
+  const _SearchBar();
+
+  @override
+  Widget build(BuildContext context) {
     return TextField(
       decoration: InputDecoration(
         hintText: 'Search...',
@@ -103,16 +108,21 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+}
 
-  /// Gradient card with curved white accent & illustration
-  Widget _buildNewCourseCard(BuildContext context) {
+class _NewCourseCard extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _NewCourseCard({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
     return SizedBox(
       height: 150,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: Stack(
           children: [
-            // Gradient background
             Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
@@ -122,31 +132,25 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-
-            // Curved accent line
             Positioned.fill(child: CustomPaint(painter: _ArcPainter())),
-
-            // Illustration on the right (klik -> login)
             Positioned(
               right: 0,
               top: 0,
               bottom: 0,
               child: GestureDetector(
-                onTap: () => _goToLogin(context),
+                onTap: onTap,
                 child: Image.asset(
                   'assets/images/WorkingFrames.png',
                   fit: BoxFit.contain,
                 ),
               ),
             ),
-
-            // Text & CTA button (CTA tidak dialihkan)
-            Padding(
-              padding: const EdgeInsets.all(16),
+            const Padding(
+              padding: EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   Text(
                     'New Course!',
                     style: TextStyle(
@@ -168,8 +172,11 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildCourseSectionTitle() {
+class _CourseSectionTitle extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -181,29 +188,45 @@ class HomeScreen extends StatelessWidget {
       ],
     );
   }
+}
 
-  Widget _buildCategoryChips() {
+class _CategoryChips extends StatelessWidget {
+  const _CategoryChips();
+
+  @override
+  Widget build(BuildContext context) {
+    const categories = ['All', 'Design', 'Programming', 'UI/UX'];
     return Wrap(
       spacing: 8,
-      children: [
-        _buildChip('All', isSelected: true),
-        _buildChip('Design'),
-        _buildChip('Programming'),
-        _buildChip('UI/UX'),
-      ],
+      children:
+          categories
+              .asMap()
+              .entries
+              .map(
+                (entry) => Chip(
+                  label: Text(entry.value),
+                  backgroundColor:
+                      entry.key == 0 ? Colors.purple : Colors.grey[200],
+                  labelStyle: TextStyle(
+                    color: entry.key == 0 ? Colors.white : Colors.black87,
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
+                ),
+              )
+              .toList(),
     );
   }
+}
 
-  Widget _buildChip(String label, {bool isSelected = false}) {
-    return Chip(
-      label: Text(label),
-      backgroundColor: isSelected ? Colors.purple : Colors.grey[200],
-      labelStyle: TextStyle(color: isSelected ? Colors.white : Colors.black87),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-    );
-  }
+class _CourseList extends StatelessWidget {
+  final VoidCallback onTap;
+  const _CourseList({required this.onTap});
 
-  Widget _buildCourseList(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     final courses = [
       {
         'title': 'Photoshop Course',
@@ -224,24 +247,35 @@ class HomeScreen extends StatelessWidget {
       separatorBuilder: (_, __) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
         final course = courses[index];
-        return _buildCourseCard(
-          context,
+        return _CourseCard(
           title: course['title'] as String,
           rating: course['rating'] as double,
           duration: course['duration'] as String,
           icon: course['icon'] as IconData,
+          onTap: onTap,
         );
       },
     );
   }
+}
 
-  Widget _buildCourseCard(
-    BuildContext context, {
-    required String title,
-    required double rating,
-    required String duration,
-    required IconData icon,
-  }) {
+class _CourseCard extends StatelessWidget {
+  final String title;
+  final double rating;
+  final String duration;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _CourseCard({
+    required this.title,
+    required this.rating,
+    required this.duration,
+    required this.icon,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -254,7 +288,7 @@ class HomeScreen extends StatelessWidget {
       child: Row(
         children: [
           GestureDetector(
-            onTap: () => _goToLogin(context),
+            onTap: onTap,
             child: Icon(icon, size: 40, color: Colors.purple),
           ),
           const SizedBox(width: 16),
