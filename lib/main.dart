@@ -1,47 +1,50 @@
+// lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // ⬅︎ Tambahkan ini
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'firebase_options.dart';
 
-// Splash & onboarding
+// splash & onboarding
 import 'screens/splash/splash_screen.dart';
 import 'screens/onboarding/onboarding_screen.dart';
 
-// Auth
+// auth
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/sign_up_screen.dart';
 import 'screens/auth/forgot_password_screen.dart';
 
-// Home variants
+// home
 import 'screens/home/home_screen.dart';
 import 'screens/home/home_student.dart';
 import 'screens/home/home_mentors.dart';
 
-// Success
+// success
 import 'screens/success/success_screen.dart';
 
-// My-course
+// fitur lain
 import 'screens/myCourse/course_student.dart';
-
-// bloggers
 import 'screens/blogger/blogger_student.dart';
-
-// profil
 import 'screens/profil/profil_student.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  // 🔌 Aktifkan offline mode (default: true)
+Future<void> _initFirestore() async {
+  // 1) atur cache – aktif by default, tapi kita set eksplisit + unlimited.
   FirebaseFirestore.instance.settings = const Settings(
-    persistenceEnabled: true, // caching diaktifkan
+    persistenceEnabled: true,
     cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
   );
 
-  // 🌐 Pastikan client Firestore kembali online jika sempat offline
+  // 2) pastikan client online (misalnya app sebelumnya force-offline)
   await FirebaseFirestore.instance.enableNetwork();
+  //  > kalau ingin force-offline di dev:
+  //  await FirebaseFirestore.instance.disableNetwork();
+}
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  await _initFirestore(); // 🔌 online / offline setup
 
   runApp(const CodeQuestApp());
 }
@@ -66,17 +69,22 @@ class CodeQuestApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
+        // splash & onboarding
         '/': (_) => const SplashScreen(),
         '/onboarding': (_) => const OnboardingScreen(),
+
+        // auth
         '/login': (_) => const LoginScreen(),
         '/signup': (_) => const SignUpScreen(),
         '/forgot-password': (_) => const ForgotPasswordScreen(),
         '/success': (_) => const SuccessScreen(),
 
-        // home-switcher (guest, student, mentor)
-        '/home': (_) => const HomeScreen(),
+        // home switcher
+        '/home': (_) => const HomeScreen(), // guest
         '/home-student': (_) => HomeStudentScreen(),
         '/home-mentors': (_) => HomeMentorScreen(),
+
+        // kursus, blog, profil
         '/choose-course': (_) => CourseStudentScreen(),
         '/blogs': (_) => const BloggerStudentScreen(),
         '/profile': (_) => const ProfileStudentScreen(),
