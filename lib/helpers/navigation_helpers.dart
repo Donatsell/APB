@@ -2,31 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/auth_data.dart';
 
-/// Bawa pengguna ke beranda sesuai rolenya.
+/// Navigasi otomatis ke home berdasarkan peran pengguna
 Future<void> navigateToHomeBasedOnRole(BuildContext context, User user) async {
   final role = await getUserRole(user);
   final route = role == 'mentor' ? '/home-mentors' : '/home-student';
   Navigator.pushReplacementNamed(context, route);
 }
 
-/// Shortcut buka layar “Kursus Saya”
+/// Shortcut: ke layar Kursus Saya
 void openMyCourseScreen(BuildContext context) =>
     Navigator.pushNamed(context, '/my-courses');
 
-/// Shortcut buka layar Blog
+/// Shortcut: ke layar Blog
 void openBlogsScreen(BuildContext context) =>
     Navigator.pushNamed(context, '/blogs');
 
-/// Shortcut buka layar Profil
+/// Shortcut: ke layar Profil
 void openProfileScreen(BuildContext context) =>
     Navigator.pushNamed(context, '/profile');
 
-/// Buka detail kursus, dengan argumen data kursus.
+/// Navigasi ke detail kursus, dengan membawa argumen
 void openCourseDetailScreen(
   BuildContext context,
   Map<String, dynamic> course,
 ) => Navigator.pushNamed(context, '/course-detail', arguments: course);
 
-/// Buka layar blog (digunakan di bottom-nav Blogger)
+/// Navigasi ke layar blog utama (dipakai bottom-nav blogger)
 void openBlogScreen(BuildContext context) =>
     Navigator.pushReplacementNamed(context, '/blogs');

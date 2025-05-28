@@ -68,9 +68,9 @@ class CodeQuestApp extends StatelessWidget {
         '/home-student': (_) => HomeStudentScreen(), // after login (student)
         '/home-mentors': (_) => HomeMentorScreen(), // after login (mentor)
         '/choose-course': (_) => CourseStudentScreen(),
-        //'/my-courses-mentor': (_) => const CourseMentorScreen(),
         '/blogs': (_) => const BloggerStudentScreen(),
         '/profile': (_) => const ProfileStudentScreen(),
+
       },
     );
   }
