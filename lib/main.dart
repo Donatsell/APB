@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // ⬅︎ Tambahkan ini
 
 import 'firebase_options.dart';
 
@@ -21,8 +22,7 @@ import 'screens/home/home_mentors.dart';
 import 'screens/success/success_screen.dart';
 
 // My-course
-import 'screens/myCourse/course_student.dart'; // ⬅︎ wrapper screen
-// (course_base_screen.dart di-import di dalam file wrapper)
+import 'screens/myCourse/course_student.dart';
 
 // bloggers
 import 'screens/blogger/blogger_student.dart';
@@ -33,6 +33,16 @@ import 'screens/profil/profil_student.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // 🔌 Aktifkan offline mode (default: true)
+  FirebaseFirestore.instance.settings = const Settings(
+    persistenceEnabled: true, // caching diaktifkan
+    cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
+  );
+
+  // 🌐 Pastikan client Firestore kembali online jika sempat offline
+  await FirebaseFirestore.instance.enableNetwork();
+
   runApp(const CodeQuestApp());
 }
 
@@ -64,13 +74,12 @@ class CodeQuestApp extends StatelessWidget {
         '/success': (_) => const SuccessScreen(),
 
         // home-switcher (guest, student, mentor)
-        '/home': (_) => const HomeScreen(), // guest
-        '/home-student': (_) => HomeStudentScreen(), // after login (student)
-        '/home-mentors': (_) => HomeMentorScreen(), // after login (mentor)
+        '/home': (_) => const HomeScreen(),
+        '/home-student': (_) => HomeStudentScreen(),
+        '/home-mentors': (_) => HomeMentorScreen(),
         '/choose-course': (_) => CourseStudentScreen(),
         '/blogs': (_) => const BloggerStudentScreen(),
         '/profile': (_) => const ProfileStudentScreen(),
-
       },
     );
   }
