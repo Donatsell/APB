@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
-import 'profil_base_screen.dart'; // Pastikan nama file benar
-import '../../helpers/navigation_helpers.dart'; // Import helper navigasi
+import 'profil_base_screen.dart';
+import '../../helpers/navigation_helpers.dart';
 
 class ProfileStudentScreen extends StatefulWidget {
   const ProfileStudentScreen({super.key});
@@ -13,55 +17,94 @@ class ProfileStudentScreen extends StatefulWidget {
 }
 
 class _ProfileStudentScreenState extends State<ProfileStudentScreen> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  // Firebase refs
+  final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
 
+  // ----- state data -----
+  String avatarUrl = 'https://www.gravatar.com/avatar/placeholder?s=150&d=mp';
   String name = '';
   String email = '';
-  String avatarUrl =
-      'https://www.gravatar.com/avatar/placeholder?s=150&d=mp'; // default
-  int coursesCompleted = 0;
-  int totalCourses = 0;
+  int completed = 0;
+  int totalCourse = 0;
   String totalTime = '0j 0m';
   String streak = '0 hari';
-  bool isLoading = true;
 
+  bool _loading = true;
+
+  // ---------- life-cycle ----------
   @override
   void initState() {
     super.initState();
-    _muatDataPengguna();
+    _fetchProfile();
   }
 
-  Future<void> _muatDataPengguna() async {
+  // ---------- load profile ----------
+  Future<void> _fetchProfile() async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+
     try {
-      final user = _auth.currentUser;
-      if (user == null) return;
-
-      final doc = await _firestore.collection('users').doc(user.uid).get();
-      final data = doc.data();
-
+      final snap = await _firestore.collection('users').doc(user.uid).get();
+      final data = snap.data();
       if (data != null) {
         setState(() {
           name = data['name'] ?? '';
           email = data['email'] ?? user.email ?? '';
           avatarUrl = data['avatarUrl'] ?? avatarUrl;
-
-          // Data opsional
-          coursesCompleted = data['coursesCompleted'] ?? 0;
-          totalCourses = data['totalCourses'] ?? 0;
+          completed = data['coursesCompleted'] ?? 0;
+          totalCourse = data['totalCourses'] ?? 0;
           totalTime = data['totalTime'] ?? '0j 0m';
           streak = data['streak'] ?? '0 hari';
-
-          isLoading = false;
+          _loading = false;
         });
       }
     } catch (e) {
-      debugPrint('Gagal memuat data pengguna: $e');
+      debugPrint('🔥 fetch profile failed: $e');
     }
   }
 
-  // Navigasi bottom tab
-  void _pilihTab(BuildContext context, int i) {
+  // ---------- kamera / galeri ----------
+  Future<void> _changeAvatar() async {
+    final picker = ImagePicker();
+    final pick = await picker.pickImage(
+      source: ImageSource.camera, // → ImageSource.gallery jika perlu
+      maxWidth: 600,
+    );
+    if (pick == null) return;
+
+    final user = _auth.currentUser;
+    if (user == null) return;
+
+    try {
+      // upload ke Storage
+      final ref = FirebaseStorage.instance.ref('avatars/${user.uid}.jpg');
+      await ref.putFile(File(pick.path));
+      final url = await ref.getDownloadURL();
+
+      // simpan di Firestore
+      await _firestore.collection('users').doc(user.uid).update({
+        'avatarUrl': url,
+      });
+
+      setState(() => avatarUrl = url);
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Foto profil diperbarui')));
+      }
+    } catch (e) {
+      debugPrint('🔥 avatar upload error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Gagal mengganti foto')));
+      }
+    }
+  }
+
+  // ---------- bottom-nav ----------
+  void _onTab(int i) {
     switch (i) {
       case 0:
         Navigator.pushReplacementNamed(context, '/home-student');
@@ -78,34 +121,38 @@ class _ProfileStudentScreenState extends State<ProfileStudentScreen> {
     }
   }
 
-  // Aksi menu
-  void _aksiMenu(BuildContext ctx, String id) {
-    if (id == 'Edit Profile') {
-      Navigator.pushNamed(context, '/edit-profile');
-    } else {
-      ScaffoldMessenger.of(
-        ctx,
-      ).showSnackBar(SnackBar(content: Text('Diklik: $id')));
+  // ---------- menu list ----------
+  void _onMenu(String id) {
+    if (id == 'Ganti Foto') {
+      _changeAvatar();
+      return;
     }
+    // menu lainnya
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Menu "$id" belum tersedia')));
   }
 
+  // ---------- BUILD ----------
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
+    if (_loading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return ProfileBaseScreen(
+      // data
       avatarUrl: avatarUrl,
       name: name,
       email: email,
-      coursesCompleted: coursesCompleted,
-      totalCourses: totalCourses,
+      coursesCompleted: completed,
+      totalCourses: totalCourse,
       totalTime: totalTime,
       streak: streak,
+      // callback
       currentTab: 3,
-      onTabSelect: (i) => _pilihTab(context, i),
-      onMenuTap: (id) => _aksiMenu(context, id),
+      onTabSelect: _onTab,
+      onMenuTap: _onMenu,
     );
   }
 }
