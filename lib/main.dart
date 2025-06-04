@@ -14,18 +14,23 @@ import 'screens/auth/login_screen.dart';
 import 'screens/auth/sign_up_screen.dart';
 import 'screens/auth/forgot_password_screen.dart';
 
+// success
+import 'screens/success/success_screen.dart';
+
 // home
 import 'screens/home/home_screen.dart';
 import 'screens/home/home_student.dart';
 import 'screens/home/home_mentors.dart';
 
-// success
-import 'screens/success/success_screen.dart';
-
-// fitur lain
+// fitur siswa
 import 'screens/myCourse/course_student.dart';
 import 'screens/blogger/blogger_student.dart';
 import 'screens/profil/profil_student.dart';
+
+// fitur mentor
+import 'screens/profil/profil_mentor.dart';
+import 'screens/myCourse/course_mentor.dart';
+// import 'screens/myCourse/detail_course_mentor.dart';
 
 Future<void> _initFirestore() async {
   // 1) atur cache – aktif by default, tapi kita set eksplisit + unlimited.
@@ -79,15 +84,26 @@ class CodeQuestApp extends StatelessWidget {
         '/forgot-password': (_) => const ForgotPasswordScreen(),
         '/success': (_) => const SuccessScreen(),
 
-        // home switcher
+        // home (guest + role-based)
         '/home': (_) => const HomeScreen(), // guest
         '/home-student': (_) => HomeStudentScreen(),
         '/home-mentors': (_) => HomeMentorScreen(),
 
-        // kursus, blog, profil
+        // siswa: kursus, blog, profil
         '/choose-course': (_) => CourseStudentScreen(),
         '/blogs': (_) => const BloggerStudentScreen(),
         '/profile': (_) => const ProfileStudentScreen(),
+        '/profile': (_) => const ProfileStudentScreen(),
+
+        // mentor: profil, kursus saya, detail kursus
+        // '/mentor-profile': (_) => ProfilMentorScreen(),
+        '/mentor-my-courses': (_) => CoursesMentorScreen(),
+        // '/mentor-course-detail': (context) {
+        //   final course =
+        //       ModalRoute.of(context)!.settings.arguments
+        //           as Map<String, dynamic>;
+        //   return MentorCourseDetailScreen(course: course);
+        // },
       },
     );
   }

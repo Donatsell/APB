@@ -54,20 +54,21 @@ class _BloggerStudentScreenState extends State<BloggerStudentScreen> {
               )
               .toList();
 
-  // bottom-nav handler
-  void _handleBottom(int i) {
-    switch (i) {
-      case 0:
-        Navigator.pushReplacementNamed(context, '/home-student');
+  // bottom-nav handler - DIPERBAIKI
+  void _handleBottom(int index) {
+    switch (index) {
+      case 0: // Home
+        navigateToStudentHome(context);
         break;
-      case 1:
-        Navigator.pushReplacementNamed(context, '/choose-course');
+      case 1: // Kursus
+        navigateToCourseSelection(context);
         break;
-      case 2:
-        openBlogScreen(context); // helper
+      case 2: // Blog
+        // Tidak perlu navigasi karena sudah di halaman blog
+        // Atau bisa pakai navigateToBlogScreen jika perlu refresh
         break;
-      case 3:
-        Navigator.pushReplacementNamed(context, '/profile');
+      case 3: // Profil
+        navigateToProfileScreen(context);
         break;
     }
   }
@@ -81,6 +82,16 @@ class _BloggerStudentScreenState extends State<BloggerStudentScreen> {
     );
   }
 
+  void _handleArticleTap(Map<String, dynamic> article) {
+    // Gunakan fungsi navigasi untuk detail blog
+    openBlogDetailScreen(context, article);
+
+    // Atau tampilkan snackbar jika detail belum ada
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   SnackBar(content: Text('Buka "${article['title']}"')),
+    // );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BloggerBaseScreen(
@@ -91,10 +102,7 @@ class _BloggerStudentScreenState extends State<BloggerStudentScreen> {
       articles: _filtered,
       bookmarked: _bookmarked,
       onBookmarkToggle: _toggleBookmark,
-      onArticleTap:
-          (a) => ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Buka "${a['title']}"'))),
+      onArticleTap: _handleArticleTap, // Menggunakan fungsi terpisah
       currentTab: 2,
       onBottomSelect: _handleBottom,
     );
