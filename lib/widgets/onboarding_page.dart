@@ -17,55 +17,73 @@ class OnboardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(data.image, height: 250),
-          const SizedBox(height: 32),
-          Text(
-            data.title,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(),
-          Text(
-            data.description,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.grey[700]),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 40),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              if (!isLast)
-                TextButton(
-                  onPressed: onBack,
-                  child: const Text("Back"),
-                )
-              // Wrapping the ElevatedButton in a Row to move it to the right
-              else
+    final size = MediaQuery.of(context).size;
 
-                const SizedBox(), // agar posisi button kanan tetap di ujung
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
+        child: Column(
+          children: [
+            // Gambar responsif
+            Expanded(
+              flex: 4,
+              child: Image.asset(
+                data.image,
+                width: size.width * 0.8,
+                fit: BoxFit.contain,
+              ),
+            ),
+            const SizedBox(height: 20),
+            // Judul dan deskripsi
+            Expanded(
+              flex: 3,
+              child: Column(
                 children: [
-                  ElevatedButton(
-                    onPressed: onNext,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepPurple,
-                      foregroundColor: Colors.white, // Text color
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  Text(
+                    data.title,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
                     ),
-                    child: Text(isLast ? "Mulai" : "Lanjut"),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    data.description,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyLarge?.copyWith(color: Colors.grey[700]),
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
-            ],
-          ),
-        ],
+            ),
+            const Spacer(),
+            // Tombol navigasi
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                if (!isLast)
+                  TextButton(onPressed: onBack, child: const Text("Kembali"))
+                else
+                  const SizedBox(width: 80), // biar tombol kanan tetap kanan
+
+                ElevatedButton(
+                  onPressed: onNext,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepPurple,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
+                  ),
+                  child: Text(isLast ? "Mulai" : "Lanjut"),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+          ],
+        ),
       ),
     );
   }
