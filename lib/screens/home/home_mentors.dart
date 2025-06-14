@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../helpers/icon_helpers.dart';
 import '../../models/course_model.dart';
 import 'home_base_screen.dart';
 
@@ -19,14 +18,14 @@ class _HomeMentorScreenState extends State<HomeMentorScreen> {
       subtitle: 'Dasar-dasar coding modern',
       rating: 4.7,
       duration: '09:00 - 10:30',
-      iconName: 'computer', // Use string instead of IconData
+      icon: Icons.computer, // Use IconData directly
     ),
     CourseModel(
       title: 'UI/UX Design Foundation',
       subtitle: 'Desain antarmuka & pengalaman pengguna',
       rating: 4.9,
       duration: '11:00 - 12:30',
-      iconName: 'design_services', // Use string instead of IconData
+      icon: Icons.design_services, // Use IconData directly
     ),
   ];
 
@@ -38,7 +37,7 @@ class _HomeMentorScreenState extends State<HomeMentorScreen> {
             'subtitle': course.subtitle,
             'rating': course.rating,
             'duration': course.duration,
-            'icon': course.icon, // This will call the getter
+            'icon': course.icon,
           },
         )
         .toList();
