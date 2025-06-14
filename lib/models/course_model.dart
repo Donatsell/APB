@@ -5,29 +5,18 @@ class CourseModel {
   final String subtitle;
   final double rating;
   final String duration;
-  final IconData icon; // Change to IconData directly
+  final String iconName; // Keep this for serialization
 
   const CourseModel({
     required this.title,
     required this.subtitle,
     required this.rating,
     required this.duration,
-    required this.icon, // Use IconData directly
+    required this.iconName,
   });
 
-  // Factory constructor for creating from Map
-  factory CourseModel.fromMap(Map<String, dynamic> map) {
-    return CourseModel(
-      title: map['title'] ?? '',
-      subtitle: map['subtitle'] ?? '',
-      rating: (map['rating'] ?? 0.0).toDouble(),
-      duration: map['duration'] ?? '',
-      icon: _getIconFromString(map['iconName'] ?? 'book'),
-    );
-  }
-
-  // Static method to convert string to IconData
-  static IconData _getIconFromString(String iconName) {
+  // Use a getter that returns constant IconData
+  IconData get icon {
     switch (iconName) {
       case 'book':
         return Icons.book;
@@ -42,6 +31,17 @@ class CourseModel {
     }
   }
 
+  // Factory constructor for creating from Map
+  factory CourseModel.fromMap(Map<String, dynamic> map) {
+    return CourseModel(
+      title: map['title'] ?? '',
+      subtitle: map['subtitle'] ?? '',
+      rating: (map['rating'] ?? 0.0).toDouble(),
+      duration: map['duration'] ?? '',
+      iconName: map['iconName'] ?? 'book',
+    );
+  }
+
   // Convert to Map
   Map<String, dynamic> toMap() {
     return {
@@ -49,7 +49,7 @@ class CourseModel {
       'subtitle': subtitle,
       'rating': rating,
       'duration': duration,
-      'icon': icon,
+      'iconName': iconName,
     };
   }
 }
