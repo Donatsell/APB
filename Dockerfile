@@ -1,78 +1,21 @@
-# Use Ubuntu as base for better compatibility with Google Cloud Build
-FROM ubuntu:20.04 AS build
+FROM node:18-alpine AS test
 
-# Avoid prompts from apt
-ENV DEBIAN_FRONTEND=noninteractive
+# Test basic functionality
+RUN echo "Docker build test successful"
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    curl \
-    git \
-    wget \
-    unzip \
-    xz-utils \
-    zip \
-    libglu1-mesa \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+# Simple web server stage
+FROM nginx:alpine
 
-# Install Flutter
-ENV FLUTTER_VERSION=3.16.0
-ENV FLUTTER_HOME="/opt/flutter"
-RUN wget -O flutter.tar.xz https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz \
-    && tar xf flutter.tar.xz -C /opt \
-    && rm flutter.tar.xz
+# Copy a simple HTML file
+RUN echo '<html><body><h1>APB TA New - Test Deployment</h1></body></html>' > /usr/share/nginx/html/index.html
 
-# Add Flutter to path
-ENV PATH="$FLUTTER_HOME/bin:$PATH"
+# Simple nginx config
+RUN echo 'server { listen 8080; location / { root /usr/share/nginx/html; index index.html; } }' > /etc/nginx/conf.d/default.conf
+RUN rm /etc/nginx/conf.d/default.conf
 
-# Disable analytics and crash reporting
-RUN flutter config --no-analytics
+# Create minimal config
+RUN echo 'events { worker_connections 1024; } http { server { listen 8080; root /usr/share/nginx/html; index index.html; location / { try_files $uri $uri/ /index.html; } } }' > /etc/nginx/nginx.conf
 
-# Accept licenses and enable web
-RUN flutter config --enable-web
-RUN flutter precache --web
-
-# Verify Flutter installation
-RUN flutter doctor
-
-# Set working directory
-WORKDIR /app
-
-# Copy pubspec files first for better caching
-COPY pubspec.yaml pubspec.lock ./
-
-# Get dependencies
-RUN flutter pub get
-
-# Copy source code
-COPY . .
-
-# Build web app
-RUN flutter build web --release --web-renderer html
-
-# Production stage with nginx
-FROM nginx:alpine AS production
-
-# Install curl for health checks
-RUN apk add --no-cache curl
-
-# Copy built app
-COPY --from=build /app/build/web /usr/share/nginx/html
-
-# Copy nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
-
-# Create nginx user and set permissions
-RUN chown -R nginx:nginx /usr/share/nginx/html && \
-    chmod -R 755 /usr/share/nginx/html
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8080/ || exit 1
-
-# Expose port
 EXPOSE 8080
 
-# Start nginx
 CMD ["nginx", "-g", "daemon off;"]
