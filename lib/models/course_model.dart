@@ -1,77 +1,61 @@
 import 'package:flutter/material.dart';
 
-class Course {
-  final String id;
+class CourseModel {
   final String title;
-  final String description;
-  final String imageUrl;
-  final IconData icon;
-  final String category;
-  final int duration;
-  final String level;
+  final String subtitle;
+  final double rating;
+  final String duration;
+  final String iconName; // Store icon name as string instead of IconData
 
-  const Course({
-    required this.id,
+  const CourseModel({
     required this.title,
-    required this.description,
-    required this.imageUrl,
-    required this.icon,
-    required this.category,
+    required this.subtitle,
+    required this.rating,
     required this.duration,
-    required this.level,
+    required this.iconName,
   });
 
-  // If you're creating IconData from codePoint, make it constant
-  static const IconData _defaultIcon = Icons.book;
-
-  // Example of how to handle dynamic icons properly
-  static IconData getIconFromString(String iconName) {
+  // Get IconData from iconName
+  IconData get icon {
     switch (iconName) {
+      case 'computer':
+        return Icons.computer;
+      case 'design_services':
+        return Icons.design_services;
       case 'book':
         return Icons.book;
       case 'code':
         return Icons.code;
-      case 'computer':
-        return Icons.computer;
       case 'school':
         return Icons.school;
+      case 'manage_accounts':
+        return Icons.manage_accounts;
+      case 'support_agent':
+        return Icons.support_agent;
       default:
         return Icons.book;
     }
   }
 
-  factory Course.fromMap(Map<String, dynamic> map) {
-    return Course(
-      id: map['id'] ?? '',
+  // Factory constructor for creating from Map
+  factory CourseModel.fromMap(Map<String, dynamic> map) {
+    return CourseModel(
       title: map['title'] ?? '',
-      description: map['description'] ?? '',
-      imageUrl: map['imageUrl'] ?? '',
-      // Use the static method instead of dynamic IconData creation
-      icon: getIconFromString(map['iconName'] ?? 'book'),
-      category: map['category'] ?? '',
-      duration: map['duration'] ?? 0,
-      level: map['level'] ?? '',
+      subtitle: map['subtitle'] ?? '',
+      rating: (map['rating'] ?? 0.0).toDouble(),
+      duration: map['duration'] ?? '',
+      iconName: map['iconName'] ?? 'book',
     );
   }
 
+  // Convert to Map
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'title': title,
-      'description': description,
-      'imageUrl': imageUrl,
-      'iconName': _getIconName(icon),
-      'category': category,
+      'subtitle': subtitle,
+      'rating': rating,
       'duration': duration,
-      'level': level,
+      'iconName': iconName,
     };
-  }
-
-  String _getIconName(IconData icon) {
-    if (icon == Icons.book) return 'book';
-    if (icon == Icons.code) return 'code';
-    if (icon == Icons.computer) return 'computer';
-    if (icon == Icons.school) return 'school';
-    return 'book';
   }
 }

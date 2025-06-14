@@ -13,31 +13,43 @@ class HomeMentorScreen extends StatefulWidget {
 class _HomeMentorScreenState extends State<HomeMentorScreen> {
   String selectedChip = 'Semua';
 
-  // Fix: Use const IconData values or handle them properly
-  final List<Map<String, dynamic>> _allCourses = [
-    {
-      'title': 'Programming Foundation',
-      'subtitle': 'Dasar-dasar coding modern',
-      'rating': 4.7,
-      'duration': '09:00 - 10:30',
-      'icon': Icons.computer, // Use const icon directly
-    },
-    {
-      'title': 'UI/UX Design Foundation',
-      'subtitle': 'Desain antarmuka & pengalaman pengguna',
-      'rating': 4.9,
-      'duration': '11:00 - 12:30',
-      'icon': Icons.design_services, // Use const icon directly
-    },
+  final List<CourseModel> _allCourses = const [
+    CourseModel(
+      title: 'Programming Foundation',
+      subtitle: 'Dasar-dasar coding modern',
+      rating: 4.7,
+      duration: '09:00 - 10:30',
+      iconName: 'computer', // Use string instead of IconData
+    ),
+    CourseModel(
+      title: 'UI/UX Design Foundation',
+      subtitle: 'Desain antarmuka & pengalaman pengguna',
+      rating: 4.9,
+      duration: '11:00 - 12:30',
+      iconName: 'design_services', // Use string instead of IconData
+    ),
   ];
 
   List<Map<String, dynamic>> get _coursesAsMap {
-    return _allCourses;
+    return _allCourses
+        .map(
+          (course) => {
+            'title': course.title,
+            'subtitle': course.subtitle,
+            'rating': course.rating,
+            'duration': course.duration,
+            'icon': course.icon, // This will call the getter
+          },
+        )
+        .toList();
   }
 
   void _onCourseTap(Map<String, dynamic> courseData) {
-    // Navigate to course detail
-    Navigator.pushNamed(context, '/course-detail', arguments: courseData);
+    // Find the original CourseModel object
+    final course = _allCourses.firstWhere(
+      (c) => c.title == courseData['title'],
+    );
+    Navigator.pushNamed(context, '/course-detail', arguments: course);
   }
 
   void _onChipSelected(String chip) {
