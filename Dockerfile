@@ -1,57 +1,77 @@
-# Use the official Dart image as base
-FROM dart:stable AS build
+# Use Ubuntu as base for better compatibility with Google Cloud Build
+FROM ubuntu:20.04 AS build
 
-# Install Flutter dependencies
+# Avoid prompts from apt
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     curl \
     git \
     wget \
     unzip \
-    libgconf-2-4 \
-    gdb \
-    libstdc++6 \
+    xz-utils \
+    zip \
     libglu1-mesa \
-    fonts-droid-fallback \
-    lib32stdc++6 \
-    python3 \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Flutter
+ENV FLUTTER_VERSION=3.16.0
 ENV FLUTTER_HOME="/opt/flutter"
-RUN git clone https://github.com/flutter/flutter.git $FLUTTER_HOME
+RUN wget -O flutter.tar.xz https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz \
+    && tar xf flutter.tar.xz -C /opt \
+    && rm flutter.tar.xz
+
+# Add Flutter to path
 ENV PATH="$FLUTTER_HOME/bin:$PATH"
 
-# Enable web support
-RUN flutter config --enable-web
+# Disable analytics and crash reporting
+RUN flutter config --no-analytics
 
-# Pre-download Flutter dependencies
+# Accept licenses and enable web
+RUN flutter config --enable-web
 RUN flutter precache --web
+
+# Verify Flutter installation
+RUN flutter doctor
 
 # Set working directory
 WORKDIR /app
 
-# Copy pubspec files
+# Copy pubspec files first for better caching
 COPY pubspec.yaml pubspec.lock ./
 
-# Get Flutter dependencies
+# Get dependencies
 RUN flutter pub get
 
-# Copy the rest of the application
+# Copy source code
 COPY . .
 
-# Build the Flutter web app
-RUN flutter build web --release
+# Build web app
+RUN flutter build web --release --web-renderer html
 
-# Use nginx for serving the web app
-FROM nginx:alpine AS runtime
+# Production stage with nginx
+FROM nginx:alpine AS production
 
-# Copy the built web app to nginx
+# Install curl for health checks
+RUN apk add --no-cache curl
+
+# Copy built app
 COPY --from=build /app/build/web /usr/share/nginx/html
 
-# Copy custom nginx configuration if needed
+# Copy nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Expose port 8080 (Google Cloud Run default)
+# Create nginx user and set permissions
+RUN chown -R nginx:nginx /usr/share/nginx/html && \
+    chmod -R 755 /usr/share/nginx/html
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8080/ || exit 1
+
+# Expose port
 EXPOSE 8080
 
 # Start nginx
