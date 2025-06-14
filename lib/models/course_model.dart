@@ -15,20 +15,23 @@ class CourseModel {
     required this.iconName,
   });
 
-  // Getter to convert iconName → constant IconData
-  IconData get icon {
-    switch (iconName) {
-      case 'book':
-        return Icons.book;
-      case 'computer':
-        return Icons.computer;
-      case 'science':
-        return Icons.science;
-      case 'design_services':
-        return Icons.design_services;
-      default:
-        return Icons.book;
-    }
+  static const Map<String, IconData> iconMap = {
+    'book': Icons.book,
+    'computer': Icons.computer,
+    'science': Icons.science,
+    'design_services': Icons.design_services,
+  };
+
+  IconData get icon => iconMap[iconName] ?? Icons.book;
+
+  factory CourseModel.fromMap(Map<String, dynamic> map) {
+    return CourseModel(
+      title: map['title'] ?? '',
+      subtitle: map['subtitle'] ?? '',
+      rating: (map['rating'] ?? 0.0).toDouble(),
+      duration: map['duration'] ?? '',
+      iconName: map['iconName'] ?? 'book',
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -39,15 +42,5 @@ class CourseModel {
       'duration': duration,
       'iconName': iconName,
     };
-  }
-
-  factory CourseModel.fromMap(Map<String, dynamic> map) {
-    return CourseModel(
-      title: map['title'] ?? '',
-      subtitle: map['subtitle'] ?? '',
-      rating: (map['rating'] ?? 0).toDouble(),
-      duration: map['duration'] ?? '',
-      iconName: map['iconName'] ?? 'book',
-    );
   }
 }
