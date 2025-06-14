@@ -1,62 +1,6 @@
 import 'package:flutter/material.dart';
 
-// Function to get IconData from string
-IconData getIconFromString(String? iconName) {
-  if (iconName == null) return Icons.book;
-
-  switch (iconName.toLowerCase()) {
-    case 'computer':
-      return Icons.computer;
-    case 'design_services':
-      return Icons.design_services;
-    case 'book':
-      return Icons.book;
-    case 'code':
-      return Icons.code;
-    case 'school':
-      return Icons.school;
-    case 'manage_accounts':
-      return Icons.manage_accounts;
-    case 'support_agent':
-      return Icons.support_agent;
-    case 'home':
-      return Icons.home;
-    case 'article':
-      return Icons.article;
-    case 'person':
-      return Icons.person;
-    case 'laptop_chromebook':
-      return Icons.laptop_chromebook;
-    case 'grid_view':
-      return Icons.grid_view;
-    case 'search':
-      return Icons.search;
-    case 'star':
-      return Icons.star;
-    default:
-      return Icons.book;
-  }
-}
-
-// Function to get string from IconData (optional, for reverse mapping)
-String getStringFromIcon(IconData icon) {
-  if (icon == Icons.computer) return 'computer';
-  if (icon == Icons.design_services) return 'design_services';
-  if (icon == Icons.book) return 'book';
-  if (icon == Icons.code) return 'code';
-  if (icon == Icons.school) return 'school';
-  if (icon == Icons.manage_accounts) return 'manage_accounts';
-  if (icon == Icons.support_agent) return 'support_agent';
-  if (icon == Icons.home) return 'home';
-  if (icon == Icons.article) return 'article';
-  if (icon == Icons.person) return 'person';
-  if (icon == Icons.laptop_chromebook) return 'laptop_chromebook';
-  if (icon == Icons.grid_view) return 'grid_view';
-  if (icon == Icons.search) return 'search';
-  if (icon == Icons.star) return 'star';
-  return 'book';
-}
-
+// ✅ Static constant map - this is tree-shake friendly
 class IconHelper {
   static const Map<String, IconData> _iconMap = {
     'computer': Icons.computer,
@@ -75,10 +19,13 @@ class IconHelper {
     'star': Icons.star,
   };
 
-  static IconData getIcon(String iconName) {
+  // ✅ This is safe for tree-shaking
+  static IconData getIcon(String? iconName) {
+    if (iconName == null) return Icons.book;
     return _iconMap[iconName.toLowerCase()] ?? Icons.book;
   }
 
+  // ✅ This is also safe for tree-shaking
   static String getIconName(IconData icon) {
     for (final entry in _iconMap.entries) {
       if (entry.value == icon) {
@@ -87,4 +34,22 @@ class IconHelper {
     }
     return 'book';
   }
+
+  // ✅ Get all available icon names
+  static List<String> get availableIcons => _iconMap.keys.toList();
+
+  // ✅ Check if icon exists
+  static bool hasIcon(String iconName) {
+    return _iconMap.containsKey(iconName.toLowerCase());
+  }
+}
+
+// ✅ Simple function that uses the static map
+IconData getIconFromString(String? iconName) {
+  return IconHelper.getIcon(iconName);
+}
+
+// ✅ Simple function that uses the static map
+String getStringFromIcon(IconData icon) {
+  return IconHelper.getIconName(icon);
 }

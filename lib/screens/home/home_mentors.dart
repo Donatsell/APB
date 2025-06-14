@@ -12,20 +12,20 @@ class HomeMentorScreen extends StatefulWidget {
 class _HomeMentorScreenState extends State<HomeMentorScreen> {
   String selectedChip = 'Semua';
 
-  final List<CourseModel> _allCourses = [
-    CourseModel.withIconName(
+  final List<CourseModel> _allCourses = const [
+    CourseModel(
       title: 'Programming Foundation',
       subtitle: 'Dasar-dasar coding modern',
       rating: 4.7,
       duration: '09:00 - 10:30',
-      iconName: 'computer',
+      icon: Icons.computer,
     ),
-    CourseModel.withIconName(
+    CourseModel(
       title: 'UI/UX Design Foundation',
       subtitle: 'Desain antarmuka & pengalaman pengguna',
       rating: 4.9,
       duration: '11:00 - 12:30',
-      iconName: 'design_services',
+      icon: Icons.design_services,
     ),
   ];
 
