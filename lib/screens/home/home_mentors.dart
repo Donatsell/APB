@@ -12,20 +12,20 @@ class HomeMentorScreen extends StatefulWidget {
 class _HomeMentorScreenState extends State<HomeMentorScreen> {
   String selectedChip = 'Semua';
 
-  final List<CourseModel> _allCourses = const [
-    CourseModel(
+  final List<CourseModel> _allCourses = [
+    CourseModel.withIconName(
       title: 'Programming Foundation',
       subtitle: 'Dasar-dasar coding modern',
       rating: 4.7,
       duration: '09:00 - 10:30',
-      icon: Icons.computer, // Use IconData directly
+      iconName: 'computer',
     ),
-    CourseModel(
+    CourseModel.withIconName(
       title: 'UI/UX Design Foundation',
       subtitle: 'Desain antarmuka & pengalaman pengguna',
       rating: 4.9,
       duration: '11:00 - 12:30',
-      icon: Icons.design_services, // Use IconData directly
+      iconName: 'design_services',
     ),
   ];
 
@@ -44,7 +44,6 @@ class _HomeMentorScreenState extends State<HomeMentorScreen> {
   }
 
   void _onCourseTap(Map<String, dynamic> courseData) {
-    // Find the original CourseModel object
     final course = _allCourses.firstWhere(
       (c) => c.title == courseData['title'],
     );
