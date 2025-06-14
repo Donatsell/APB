@@ -1,0 +1,35 @@
+# Build outputs
+build/
+.dart_tool/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+README.md
+*.md
+
+# Platform-specific directories (since we're building for web)
+android/
+ios/
+linux/
+macos/
+windows/
+
+# Test files
+test/
+integration_test/
+
+# Logs
+*.log
