@@ -28,9 +28,7 @@ import 'screens/blogger/blogger_student.dart';
 import 'screens/profil/profil_student.dart';
 
 // fitur mentor
-import 'screens/profil/profil_mentor.dart';
 import 'screens/myCourse/course_mentor.dart';
-// import 'screens/myCourse/detail_course_mentor.dart';
 
 Future<void> _initFirestore() async {
   // 1) atur cache – aktif by default, tapi kita set eksplisit + unlimited.
@@ -93,17 +91,9 @@ class CodeQuestApp extends StatelessWidget {
         '/choose-course': (_) => CourseStudentScreen(),
         '/blogs': (_) => const BloggerStudentScreen(),
         '/profile': (_) => const ProfileStudentScreen(),
-        '/profile': (_) => const ProfileStudentScreen(),
 
         // mentor: profil, kursus saya, detail kursus
-        // '/mentor-profile': (_) => ProfilMentorScreen(),
         '/mentor-my-courses': (_) => CoursesMentorScreen(),
-        // '/mentor-course-detail': (context) {
-        //   final course =
-        //       ModalRoute.of(context)!.settings.arguments
-        //           as Map<String, dynamic>;
-        //   return MentorCourseDetailScreen(course: course);
-        // },
       },
     );
   }
