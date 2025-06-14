@@ -1,7 +1,9 @@
-FROM dart:stable AS build
+FROM ubuntu:20.04 as builder
 
 # Install Flutter dependencies
-RUN apt-get update && apt-get install -y \
+RUN --mount=type=secret,id=api_key \
+    API_KEY=$(cat /run/secrets/api_key) && \
+    apt-get update && apt-get install -y \
     curl \
     git \
     wget \
