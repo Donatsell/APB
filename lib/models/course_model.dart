@@ -5,7 +5,7 @@ class CourseModel {
   final String subtitle;
   final double rating;
   final String duration;
-  final String iconName; // Store icon name as string instead of IconData
+  final String iconName; // Store icon name as string
 
   const CourseModel({
     required this.title,
@@ -15,27 +15,18 @@ class CourseModel {
     required this.iconName,
   });
 
-  // Get IconData from iconName
-  IconData get icon {
-    switch (iconName) {
-      case 'computer':
-        return Icons.computer;
-      case 'design_services':
-        return Icons.design_services;
-      case 'book':
-        return Icons.book;
-      case 'code':
-        return Icons.code;
-      case 'school':
-        return Icons.school;
-      case 'manage_accounts':
-        return Icons.manage_accounts;
-      case 'support_agent':
-        return Icons.support_agent;
-      default:
-        return Icons.book;
-    }
-  }
+  // Use constant icons to avoid tree shaking issues
+  static const Map<String, IconData> _iconMap = {
+    'book': Icons.book,
+    'computer': Icons.computer,
+    'science': Icons.science,
+    'design_services': Icons.design_services,
+    'calculate': Icons.calculate,
+    'palette': Icons.palette,
+  };
+
+  // Getter that returns constant IconData
+  IconData get icon => _iconMap[iconName] ?? Icons.book;
 
   // Factory constructor for creating from Map
   factory CourseModel.fromMap(Map<String, dynamic> map) {
