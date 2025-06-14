@@ -5,28 +5,15 @@ class CourseModel {
   final String subtitle;
   final double rating;
   final String duration;
-  final String iconName; // Store icon name as string
+  final IconData icon; // Change to IconData directly
 
   const CourseModel({
     required this.title,
     required this.subtitle,
     required this.rating,
     required this.duration,
-    required this.iconName,
+    required this.icon, // Use IconData directly
   });
-
-  // Use constant icons to avoid tree shaking issues
-  static const Map<String, IconData> _iconMap = {
-    'book': Icons.book,
-    'computer': Icons.computer,
-    'science': Icons.science,
-    'design_services': Icons.design_services,
-    'calculate': Icons.calculate,
-    'palette': Icons.palette,
-  };
-
-  // Getter that returns constant IconData
-  IconData get icon => _iconMap[iconName] ?? Icons.book;
 
   // Factory constructor for creating from Map
   factory CourseModel.fromMap(Map<String, dynamic> map) {
@@ -35,8 +22,26 @@ class CourseModel {
       subtitle: map['subtitle'] ?? '',
       rating: (map['rating'] ?? 0.0).toDouble(),
       duration: map['duration'] ?? '',
-      iconName: map['iconName'] ?? 'book',
+      icon: _getIconFromString(map['iconName'] ?? 'book'),
     );
+  }
+
+  // Static method to convert string to IconData
+  static IconData _getIconFromString(String iconName) {
+    switch (iconName) {
+      case 'computer':
+        return Icons.computer;
+      case 'design_services':
+        return Icons.design_services;
+      case 'science':
+        return Icons.science;
+      case 'calculate':
+        return Icons.calculate;
+      case 'palette':
+        return Icons.palette;
+      default:
+        return Icons.book;
+    }
   }
 
   // Convert to Map
@@ -46,7 +51,17 @@ class CourseModel {
       'subtitle': subtitle,
       'rating': rating,
       'duration': duration,
-      'iconName': iconName,
+      'iconName': _getStringFromIcon(icon),
     };
+  }
+
+  // Helper method to convert IconData back to string
+  static String _getStringFromIcon(IconData icon) {
+    if (icon == Icons.computer) return 'computer';
+    if (icon == Icons.design_services) return 'design_services';
+    if (icon == Icons.science) return 'science';
+    if (icon == Icons.calculate) return 'calculate';
+    if (icon == Icons.palette) return 'palette';
+    return 'book';
   }
 }

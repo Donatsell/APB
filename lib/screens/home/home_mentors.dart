@@ -19,14 +19,14 @@ class _HomeMentorScreenState extends State<HomeMentorScreen> {
       subtitle: 'Dasar-dasar coding modern',
       rating: 4.7,
       duration: '09:00 - 10:30',
-      iconName: 'computer', // Use string instead of IconData
+      icon: Icons.computer, // Use constant IconData
     ),
     CourseModel(
       title: 'UI/UX Design Foundation',
       subtitle: 'Desain antarmuka & pengalaman pengguna',
       rating: 4.9,
       duration: '11:00 - 12:30',
-      iconName: 'design_services', // Use string instead of IconData
+      icon: Icons.design_services, // Use constant IconData
     ),
   ];
 
