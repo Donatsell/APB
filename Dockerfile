@@ -30,8 +30,8 @@ RUN flutter pub get
 # Copy source code
 COPY . .
 
-# Build web app
-RUN flutter build web --release
+# Build web app with --no-tree-shake-icons to avoid IconData issues
+RUN flutter build web --release --no-tree-shake-icons
 
 # Production stage
 FROM nginx:alpine
@@ -40,25 +40,19 @@ FROM nginx:alpine
 COPY --from=build /app/build/web /usr/share/nginx/html
 
 # Create nginx config
-COPY <<EOF /etc/nginx/nginx.conf
-events {
-    worker_connections 1024;
-}
-http {
-    include /etc/nginx/mime.types;
-    default_type application/octet-stream;
-    
-    server {
-        listen 8080;
-        root /usr/share/nginx/html;
-        index index.html;
-        
-        location / {
-            try_files \$uri \$uri/ /index.html;
-        }
-    }
-}
-EOF
+RUN echo 'events { worker_connections 1024; } \
+http { \
+    include /etc/nginx/mime.types; \
+    default_type application/octet-stream; \
+    server { \
+        listen 8080; \
+        root /usr/share/nginx/html; \
+        index index.html; \
+        location / { \
+            try_files $uri $uri/ /index.html; \
+        } \
+    } \
+}' > /etc/nginx/nginx.conf
 
 EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
