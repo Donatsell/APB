@@ -17,18 +17,22 @@ class CourseModel {
     required this.iconType,
   });
 
-  IconData get icon {
-    switch (iconType) {
-      case CourseIconType.book:
-        return Icons.book;
-      case CourseIconType.computer:
-        return Icons.computer;
-      case CourseIconType.science:
+  static IconData getIconForCategory(String category) {
+    switch (category.toLowerCase()) {
+      case 'math':
+        return Icons.calculate;
+      case 'science':
         return Icons.science;
-      case CourseIconType.designServices:
-        return Icons.design_services;
+      case 'history':
+        return Icons.history;
+      case 'english':
+        return Icons.book;
+      default:
+        return Icons.school;
     }
   }
+
+  IconData get icon => getIconForCategory(iconType.name);
 
   factory CourseModel.fromMap(Map<String, dynamic> map) {
     return CourseModel(
