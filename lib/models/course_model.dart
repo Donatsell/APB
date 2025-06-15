@@ -15,6 +15,7 @@ class CourseModel {
     required this.iconName,
   });
 
+  // ✅ Use const IconData directly, no Icon() widget!
   static const Map<String, IconData> iconMap = {
     'book': Icons.book,
     'computer': Icons.computer,
@@ -22,6 +23,7 @@ class CourseModel {
     'design_services': Icons.design_services,
   };
 
+  // ✅ Getter is fine – accessing const values only
   IconData get icon => iconMap[iconName] ?? Icons.book;
 
   factory CourseModel.fromMap(Map<String, dynamic> map) {
@@ -40,7 +42,7 @@ class CourseModel {
       'subtitle': subtitle,
       'rating': rating,
       'duration': duration,
-      'iconName': iconName,
+      'iconName': iconName, // ✅ Store iconName (not IconData!)
     };
   }
 }

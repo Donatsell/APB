@@ -39,7 +39,7 @@ RUN flutter pub get
 COPY . .
 
 # Build web app with --no-tree-shake-icons to avoid IconData issues
-RUN flutter build web --release --no-tree-shake-icons
+RUN flutter build web --release
 
 # Production stage
 FROM nginx:alpine
@@ -49,18 +49,18 @@ COPY --from=build /app/build/web /usr/share/nginx/html
 
 # Create nginx config
 RUN echo 'events { worker_connections 1024; } \
-http { \
+    http { \
     include /etc/nginx/mime.types; \
     default_type application/octet-stream; \
     server { \
-        listen 8080; \
-        root /usr/share/nginx/html; \
-        index index.html; \
-        location / { \
-            try_files $uri $uri/ /index.html; \
-        } \
+    listen 8080; \
+    root /usr/share/nginx/html; \
+    index index.html; \
+    location / { \
+    try_files $uri $uri/ /index.html; \
     } \
-}' > /etc/nginx/nginx.conf
+    } \
+    }' > /etc/nginx/nginx.conf
 
 EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
