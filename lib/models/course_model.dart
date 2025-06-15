@@ -1,30 +1,34 @@
 import 'package:flutter/material.dart';
 
+enum CourseIconType { book, computer, science, designServices }
+
 class CourseModel {
   final String title;
   final String subtitle;
   final double rating;
   final String duration;
-  final String iconName;
+  final CourseIconType iconType;
 
   const CourseModel({
     required this.title,
     required this.subtitle,
     required this.rating,
     required this.duration,
-    required this.iconName,
+    required this.iconType,
   });
 
-  // ✅ Use const IconData directly, no Icon() widget!
-  static const Map<String, IconData> iconMap = {
-    'book': Icons.book,
-    'computer': Icons.computer,
-    'science': Icons.science,
-    'design_services': Icons.design_services,
-  };
-
-  // ✅ Getter is fine – accessing const values only
-  IconData get icon => iconMap[iconName] ?? Icons.book;
+  IconData get icon {
+    switch (iconType) {
+      case CourseIconType.book:
+        return Icons.book;
+      case CourseIconType.computer:
+        return Icons.computer;
+      case CourseIconType.science:
+        return Icons.science;
+      case CourseIconType.designServices:
+        return Icons.design_services;
+    }
+  }
 
   factory CourseModel.fromMap(Map<String, dynamic> map) {
     return CourseModel(
@@ -32,7 +36,7 @@ class CourseModel {
       subtitle: map['subtitle'] ?? '',
       rating: (map['rating'] ?? 0.0).toDouble(),
       duration: map['duration'] ?? '',
-      iconName: map['iconName'] ?? 'book',
+      iconType: CourseIconType.values.byName(map['iconType'] ?? 'book'),
     );
   }
 
@@ -42,7 +46,7 @@ class CourseModel {
       'subtitle': subtitle,
       'rating': rating,
       'duration': duration,
-      'iconName': iconName, // ✅ Store iconName (not IconData!)
+      'iconType': iconType.name,
     };
   }
 }

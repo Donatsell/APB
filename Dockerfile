@@ -1,9 +1,7 @@
 FROM ubuntu:20.04 as builder
 
 # Install Flutter dependencies
-RUN --mount=type=secret,id=api_key \
-    API_KEY=$(cat /run/secrets/api_key) && \
-    apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y \
     curl \
     git \
     wget \
@@ -29,25 +27,23 @@ RUN flutter precache --web
 # Set working directory
 WORKDIR /app
 
-# Copy pubspec files
+# Copy pubspec files and get dependencies
 COPY pubspec.yaml pubspec.lock ./
-
-# Get dependencies
 RUN flutter pub get
 
 # Copy source code
 COPY . .
 
-# Build web app with --no-tree-shake-icons to avoid IconData issues
-RUN flutter build web --release
+# Build web app (disable icon tree shaking)
+RUN flutter build web --release --no-tree-shake-icons
 
 # Production stage
 FROM nginx:alpine
 
-# Copy built app
-COPY --from=build /app/build/web /usr/share/nginx/html
+# Copy built web app from builder stage
+COPY --from=builder /app/build/web /usr/share/nginx/html
 
-# Create nginx config
+# NGINX config for Flutter web routing
 RUN echo 'events { worker_connections 1024; } \
     http { \
     include /etc/nginx/mime.types; \

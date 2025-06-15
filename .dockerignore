@@ -1,35 +1,48 @@
-# Build outputs
+# Flutter build directories
 build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
 .dart_tool/
+flutter_build/
 
-# IDE files
+# Dependency lock
+pubspec.lock
+
+# IDE/editor configs
 .vscode/
 .idea/
-*.swp
-*.swo
+*.iml
 
-# OS files
+# OS generated
 .DS_Store
 Thumbs.db
 
-# Git
+# Swap files
+*.swp
+*.swo
+
+# Git and version control
 .git/
 .gitignore
 
-# Documentation
-README.md
-*.md
-
-# Platform-specific directories (since we're building for web)
+# Unused platform code (if targeting web-only)
 android/
 ios/
 linux/
 macos/
 windows/
 
-# Test files
+# Tests (optional in production builds)
 test/
 integration_test/
 
 # Logs
 *.log
+
+# Docs and misc
+README.md
+*.md
+LICENSE
+*.bak
